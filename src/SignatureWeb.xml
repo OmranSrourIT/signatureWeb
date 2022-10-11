@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<widget id="mendix.signatureweb.SignatureWeb" pluginWidget="true" needsEntityContext="true" offlineCapable="true"
+        supportedPlatform="Web"
+        xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../node_modules/mendix/custom_widget.xsd">
+    <name>Signature Web</name>
+    <description>My widget description</description> 
+    <properties>
+        <propertyGroup caption="General">
+            <property key="SignatureImage" type="attribute" required="true">
+                <caption>Value attribute</caption>
+                <description>The attribute that contains the signatureweb value</description>
+                <attributeTypes>
+                    <attributeType name="String"/>
+                    <attributeType name="Enum"/>
+                    <attributeType name="Integer"/>
+                    <attributeType name="Decimal"/>
+                    <attributeType name="Long"/>
+                </attributeTypes>
+            </property> 
+        </propertyGroup> 
+        <propertyGroup caption="Events">
+            <property key="onSaveAction" type="action" required="true">
+                <caption>On click Save action</caption>
+                <description>Action to trigger when button Save is clicked</description>
+            </property>
+
+            <property key="EnableButtonSignature" type="expression" defaultValue="'false'">
+                <caption>Enable Button Signature</caption>
+                <description>boolean Enable Button Signature</description>
+                <returnType type="String" />
+            </property>
+
+            <property key="EnableButtonSave" type="expression" defaultValue="'false'">
+                <caption>Enable Button Save</caption>
+                <description>boolean Enable Button Save</description>
+                <returnType type="String" />
+            </property>
+        </propertyGroup>
+    </properties>
+</widget>

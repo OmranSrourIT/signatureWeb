@@ -1,0 +1,25 @@
+
+
+.header {
+    height: 10%;
+    background-color: #1C2932;
+    border-radius: 15px 15px 0 0;
+   
+}
+.RowHeader {
+    direction: rtl;
+}
+
+.boxStyle {  
+       /* height: 35mm; */
+       width: 60mm;
+       object-fit: none;
+       background-color: white;
+       width: 450px;
+       border: 1px solid rgb(211, 211, 211);
+       border: 2px solid #333333;
+       border-radius: 20px;
+       height: 255px;
+};
+
+ 
