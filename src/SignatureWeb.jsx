@@ -36,7 +36,7 @@ export class Button extends React.Component {
 export class FirstName extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { firstName: "John" };
+        this.state = { firstName: "" };
     }
     handleOnChange(event) {
         this.setState({
@@ -55,7 +55,7 @@ export class FirstName extends React.Component {
 export class LastName extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { lastName: "Smith" };
+        this.state = { lastName: "" };
     }
     handleOnChange(event) {
         this.setState({
@@ -102,6 +102,7 @@ export class UserMsgs extends React.Component {
 
 
     componentDidUpdate() {
+
         debugger;
         if (this.state.userMessage != '') {
             var SignaturePad = this.state.userMessage.split('>')[1]
@@ -110,7 +111,7 @@ export class UserMsgs extends React.Component {
                 this.props.props.SignatureImage?.setValue(SignaturePad);
 
             }
- 
+
         }
         this.textLog.current.scrollTop = this.textLog.current.scrollHeight; // Auto-scrolls to the bottom
     }
@@ -140,7 +141,8 @@ export class ImageBox extends React.Component {
     }
     handleOnChange(event) {
         this.setState({
-            imageSrc: event.target.value
+            imageSrc: event.target.value , 
+            
         })
         console.log("imageSrc changed");
     }
@@ -199,8 +201,12 @@ export class SignatureWeb extends Component {
     constructor(props) {
         super(props);
 
+        this.state = { blockedButtonCapture: false }
+
 
     }
+
+   
     SaveCaptureSignature() {
         var ImageBase64Signature = document.getElementById("imageBox").src;
         if (ImageBase64Signature.includes('data')) {
@@ -220,9 +226,51 @@ export class SignatureWeb extends Component {
 
     }
     componentDidMount() {
-        document.getElementById("imageBox").src = "./img/MyFirstModule$Images$SignaturePen.png";
+        const script1 = document.createElement("script");
+        script1.src = "./wgssSigCaptX.js";
+        script1.async = false;
+        document.body.appendChild(script1);
+
+        const script2 = document.createElement("script");
+        script2.src = "./base64.js";
+        script2.async = false;
+        document.body.appendChild(script2);
+
+        const script3 = document.createElement("script");
+        script3.src = "./SigCaptX-Globals.js";
+        script3.async = false;
+        document.body.appendChild(script3);
+
+        const script4 = document.createElement("script");
+        script4.src = "./SigCaptX-Utils.js";
+        script4.async = false;
+        document.body.appendChild(script4);
+
+        const script5 = document.createElement("script");
+        script5.src = "./SigCaptX-SessionControl.js";
+        script5.async = false;
+        document.body.appendChild(script5);
+
+        const script6 = document.createElement("script");
+        script6.src = "./SigCaptX-Functions.js";
+        script6.async = false;
+        document.body.appendChild(script6);
+
+        document.getElementById("imageBox").src = `./img/${this.props.ModuleName.value}$${this.props.ImageCollection.value}$SignaturePen.png`
     }
 
+
+    ClosePage() {
+
+        if (this.props.onSCloseAction && this.props.onSCloseAction.canExecute) {
+
+            this.props.onSCloseAction.execute();
+        }
+
+
+    }
+
+    
 
     render() {
 
@@ -230,28 +278,11 @@ export class SignatureWeb extends Component {
         return (
             <div className="container">
 
-                <Helmet>
-
-                    <meta charset="utf-8" />
-                    <meta name="viewport" content="width=device-width, initial-scale=1" />
-                    <meta name="theme-color" content="#000000" />
-                    <meta name="description" content="Web site created using create-react-app" />
-                    {/* 
-<link rel="manifest" href="./manifest.json" /> */}
-
-                    <script src="./wgssSigCaptX.js"></script>
-                    <script src="./base64.js"></script>
-                    <script src="./SigCaptX-Globals.js"></script>
-                    <script src="./SigCaptX-Utils.js"></script>
-                    <script src="./SigCaptX-SessionControl.js"></script>
-                    <script src="./SigCaptX-Functions.js"></script>
-
-
-                </Helmet>
-
-                <div className="row RowHeader header">
+                {/* <div className="row RowHeader header">
                     <div className="col-xs-6 col-sm-6 col-md-6">
-                        <img src="./img/MyFirstModule$Images$IraqLogo.png" />
+                        <img src={`./img/${this.props.ModuleName.value}$${this.props.ImageCollection.value}$IraqLogo.png`} />
+                        
+                        
                     </div>
 
                     <div className="col-xs-6 col-sm-6 col-md-6">
@@ -262,9 +293,9 @@ export class SignatureWeb extends Component {
                             top: "35%",
                         }} >التوقيع الالكتروني</h2>
                     </div>
-                </div>
+                </div> */}
 
-                <div className="row" style={{ alignItems: 'center', top: '100px', position: 'relative' }}>
+                <div className="row" style={{ alignItems: 'center', top: '100px', position: 'relative', direction: 'ltr' }}>
                     <div className="col-xs-3 col-sm-3 col-md-3">
 
                     </div>
@@ -273,16 +304,29 @@ export class SignatureWeb extends Component {
                     </div>
                     <div className="col-xs-3 col-sm-3 col-md-3">
                         <div style={{ display: 'grid' }}>
-                            <button disabled={this.props.EnableButtonSignature.value == 'true' ? true : false} value="Capture" style={{ width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => {
-                                bodyOnLoad()
-                                setTimeout(() => {
-                                    capture();
-                                }, 1000);
+                            <button value="Capture" disabled={this.state.blockedButtonCapture} style={{ visibility: this.props.EnableButtonSignature.value == 'false' ? "hidden" : "visible", width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => {
+                                this.setState({
+                                    blockedButtonCapture: true
+                                }, () => {
+                                    bodyOnLoad();
+                                    setTimeout(() => {
+                                     
+                                        this.setState({
+                                            blockedButtonCapture: false
+                                        },()=>{
+                                            capture();
+                                          
+                                        })
+                                    }, 2000);
+ 
+
+                                })
+
                             }} title="Starts signature capture" >توقيـع / أعادة توقيـع</button>
                             {/* funcName={window.capture}  */}
                             <br />
-                            <button disabled={this.props.EnableButtonSave.value == 'true' ? true : false} value="Save" style={{ width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => this.SaveCaptureSignature()} title="Starts signature capture" >حفــظ</button>
-
+                            <button value="Save" style={{ visibility: this.props.EnableButtonSave.value == 'false' ? "hidden" : "visible", width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px", top: "-9px", position: 'relative' }} onClick={() => this.SaveCaptureSignature()} title="Starts signature capture" >حفــظ</button>
+                            <button value="Save" style={{ width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => this.ClosePage()} title="Starts signature capture" >الغــاء</button>
                         </div>
 
                     </div>
