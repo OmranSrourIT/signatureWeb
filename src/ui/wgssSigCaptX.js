@@ -272,14 +272,14 @@ function WacomGSS_SignatureSDK(_onDetectRunning, service_port)
     FW_LIGHT: 300,
     FW_NORMAL: 400,
     FW_MEDIUM: 500,
-    FW_SEMIBOLD: 600,
-    FW_BOLD: 700,
+    FW_SEMIBOLD: 900,
+    FW_BOLD: 900,
     FW_EXTRABOLD: 800,
     FW_HEAVY: 900,
     FW_ULTRALIGHT: 200,
     FW_REGULAR: 400,
-    FW_DEMIBOLD: 600,
-    FW_ULTRABOLD: 800,
+    FW_DEMIBOLD: 900,
+    FW_ULTRABOLD: 900,
     FW_BLACK: 900
   }
   

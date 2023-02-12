@@ -6,14 +6,14 @@ import { Helmet } from "react-helmet";
 
 
 export class Button extends React.Component {
-    debugger;
+    ;
     constructor(props) {
         super(props);
         this.onClickHandler = this.handleOnChange.bind(this);
         this.state = { disabled: false };
     }
     handleOnChange(event) {
-        debugger;
+        ;
         if (this.props.id == "Restore") {
             // Disable the Restore button when required
             this.setState({
@@ -73,13 +73,13 @@ export class LastName extends React.Component {
 
 
 export class TextSignature extends React.Component {
-    debugger;
+
     constructor(props) {
         super(props);
         this.state = { txtSignature: "" };
     }
     handleOnChange(event) {
-        debugger;
+
         this.setState({
             txtSignature: event.target.value
         })
@@ -103,7 +103,7 @@ export class UserMsgs extends React.Component {
 
     componentDidUpdate() {
 
-        debugger;
+        ;
         if (this.state.userMessage != '') {
             var SignaturePad = this.state.userMessage.split('>')[1]
             if (SignaturePad) {
@@ -141,8 +141,8 @@ export class ImageBox extends React.Component {
     }
     handleOnChange(event) {
         this.setState({
-            imageSrc: event.target.value , 
-            
+            imageSrc: event.target.value,
+
         })
         console.log("imageSrc changed");
     }
@@ -201,60 +201,74 @@ export class SignatureWeb extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { blockedButtonCapture: false }
+        this.state = { blockedButtonCapture: false, BlockedCloseButton: false , BlockedSaveButton : false }
+
 
 
     }
 
-   
+
     SaveCaptureSignature() {
         var ImageBase64Signature = document.getElementById("imageBox").src;
         if (ImageBase64Signature.includes('data')) {
-            ImageBase64Signature = ImageBase64Signature.split(',')[1]
-            debugger;
+            ImageBase64Signature = ImageBase64Signature.split(',')[1];
+
             if (this.props.onSaveAction && this.props.onSaveAction.canExecute) {
-                this.props.SignatureImage.setValue(ImageBase64Signature);
-                this.props.onSaveAction.execute();
+                this.setState({
+                    BlockedSaveButton :true
+                },()=>{
+                    this.props.SignatureImage.setValue(ImageBase64Signature);
+                    this.props.onSaveAction.execute();
+                })
+               
             }
 
         } else {
             if (this.props.onSaveAction && this.props.onSaveAction.canExecute) {
-                this.props.SignatureImage.setValue("");
-                this.props.onSaveAction.execute();
+                this.setState({
+                    BlockedSaveButton :true
+                },()=>{
+                    this.props.SignatureImage.setValue("");
+                    this.props.onSaveAction.execute();
+                })
+                
             }
         }
 
     }
     componentDidMount() {
+
+
         const script1 = document.createElement("script");
-        script1.src = "./wgssSigCaptX.js";
+        script1.src = "./SinatureJS/wgssSigCaptX.js";
         script1.async = false;
         document.body.appendChild(script1);
 
         const script2 = document.createElement("script");
-        script2.src = "./base64.js";
+        script2.src = "./SinatureJS/base64.js";
         script2.async = false;
         document.body.appendChild(script2);
 
         const script3 = document.createElement("script");
-        script3.src = "./SigCaptX-Globals.js";
+        script3.src = "./SinatureJS/SigCaptX-Globals.js";
         script3.async = false;
         document.body.appendChild(script3);
 
         const script4 = document.createElement("script");
-        script4.src = "./SigCaptX-Utils.js";
+        script4.src = "./SinatureJS/SigCaptX-Utils.js";
         script4.async = false;
         document.body.appendChild(script4);
 
-        const script5 = document.createElement("script");
-        script5.src = "./SigCaptX-SessionControl.js";
-        script5.async = false;
-        document.body.appendChild(script5);
-
         const script6 = document.createElement("script");
-        script6.src = "./SigCaptX-Functions.js";
+        script6.src = "./SinatureJS/SigCaptX-Functions.js";
         script6.async = false;
         document.body.appendChild(script6);
+
+
+        const script5 = document.createElement("script");
+        script5.src = "./SinatureJS/SigCaptX-SessionControl.js";
+        script5.async = false;
+        document.body.appendChild(script5);
 
         document.getElementById("imageBox").src = `./img/${this.props.ModuleName.value}$${this.props.ImageCollection.value}$SignaturePen.png`
     }
@@ -264,13 +278,19 @@ export class SignatureWeb extends Component {
 
         if (this.props.onSCloseAction && this.props.onSCloseAction.canExecute) {
 
-            this.props.onSCloseAction.execute();
+            this.setState({
+                BlockedCloseButton: true
+            }, () => {
+                this.props.onSCloseAction.execute();
+            })
+
+
         }
 
 
     }
 
-    
+
 
     render() {
 
@@ -305,28 +325,30 @@ export class SignatureWeb extends Component {
                     <div className="col-xs-3 col-sm-3 col-md-3">
                         <div style={{ display: 'grid' }}>
                             <button value="Capture" disabled={this.state.blockedButtonCapture} style={{ visibility: this.props.EnableButtonSignature.value == 'false' ? "hidden" : "visible", width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => {
+
                                 this.setState({
                                     blockedButtonCapture: true
                                 }, () => {
                                     bodyOnLoad();
+
                                     setTimeout(() => {
-                                     
+
                                         this.setState({
                                             blockedButtonCapture: false
-                                        },()=>{
+                                        }, () => {
                                             capture();
-                                          
+
                                         })
                                     }, 2000);
- 
+
 
                                 })
 
                             }} title="Starts signature capture" >توقيـع / أعادة توقيـع</button>
                             {/* funcName={window.capture}  */}
                             <br />
-                            <button value="Save" style={{ visibility: this.props.EnableButtonSave.value == 'false' ? "hidden" : "visible", width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px", top: "-9px", position: 'relative' }} onClick={() => this.SaveCaptureSignature()} title="Starts signature capture" >حفــظ</button>
-                            <button value="Save" style={{ width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => this.ClosePage()} title="Starts signature capture" >الغــاء</button>
+                            <button value="Save" disabled={this.state.BlockedSaveButton} style={{ visibility: this.props.EnableButtonSave.value == 'false' ? "hidden" : "visible", width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px", top: "-9px", position: 'relative' }} onClick={() => this.SaveCaptureSignature()} title="Starts signature capture" >حفــظ</button>
+                            <button value="Save" disabled={this.state.BlockedCloseButton} style={{ width: "164px", height: "60px", color: "white", backgroundColor: "#1f3646", fontSize: "20px", borderRadius: "12px" }} onClick={() => this.ClosePage()} title="Starts signature capture" >الغــاء</button>
                         </div>
 
                     </div>
